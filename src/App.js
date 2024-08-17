@@ -1,4 +1,30 @@
+import React, { useState } from 'react';
+
 function App() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    interests: []
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: type === 'checkbox'
+        ? checked
+          ? [...prevForm.interests, value]
+          : prevForm.interests.filter((interest) => interest !== value)
+        : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
   return (
     <main>
       <h1>Hi, I'm (your name)</h1>
@@ -18,6 +44,72 @@ function App() {
         <a href="https://github.com">GitHub</a>
         <a href="https://linkedin.com">LinkedIn</a>
       </div>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={form.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+          />
+        </div>
+        <fieldset>
+          <legend>Interests</legend>
+          <label>
+            <input
+              type="checkbox"
+              name="interests"
+              value="Interest1"
+              checked={form.interests.includes('Interest1')}
+              onChange={handleChange}
+            />
+            Interest 1
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="interests"
+              value="Interest2"
+              checked={form.interests.includes('Interest2')}
+              onChange={handleChange}
+            />
+            Interest 2
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              name="interests"
+              value="Interest3"
+              checked={form.interests.includes('Interest3')}
+              onChange={handleChange}
+            />
+            Interest 3
+          </label>
+        </fieldset>
+        <button type="submit">Submit</button>
+      </form>
+
+      {submitted && (
+        <p>
+          Form submitted successfully!<br />
+          Name: {form.name}<br />
+          Email: {form.email}<br />
+          Interests: {form.interests.join(', ')}
+        </p>
+      )}
     </main>
   );
 }
